@@ -1,14 +1,19 @@
 {
-  "name": "shallow-goof",
-  "version": "0.0.1",
-  "description": "A vulnerable demo application",
-  "homepage": "https://repotest.io/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Snyk/shallow-goof"
+  "name": "npm-package",
+  "version": "1.0.0",
+  "description": "Simple NPM package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": "repotest",
+  "license": "ISC",
   "dependencies": {
-    "qs": "0.0.6",
-    "node-uuid": "1.4.0"
+    "to-array": "0.1.4",
+    "repotest": "*"
+  },
+  "devDependencies": {
+    "object-assign": "4.1.1",
+    "rewire": "^4.0.1"
   }
 }
