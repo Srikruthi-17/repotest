@@ -1,57 +1,12 @@
-import chalk from 'chalk';
+// Separator used while displaying various paths (e.g. package paths, call
+// paths) to the user
+export const PATH_SEPARATOR = ' > ';
 
-export const SNYK_APP_NAME = 'repotestAppName';
-export const SNYK_APP_REDIRECT_URIS = 'repotestAppRedirectUris';
-export const SNYK_APP_SCOPES = 'repotestAppScopes';
-export const SNYK_APP_CLIENT_ID = 'repotestAppClientId';
-export const SNYK_APP_ORG_ID = 'repotestAppOrgId';
-export const SNYK_APP_DEBUG = 'repotest:apps';
+// String used to signify hidden path elements e.g. for abbreviated paths
+export const PATH_HIDDEN_ELEMENTS = '...';
 
-export enum EValidSubCommands {
-  CREATE = 'create',
-}
+// Number of function names to show in the beginning of an abbreviated call path
+export const CALL_PATH_LEADING_ELEMENTS = 2;
 
-export enum EAppsURL {
-  CREATE_APP,
-}
-
-export const validAppsSubCommands = Object.values<string>(EValidSubCommands);
-
-export const AppsErrorMessages = {
-  orgRequired: `Option '--org' is required! For interactive mode, please use '--interactive' or '-i' flag. For more information please run the help command 'repotest apps --help' or 'repotest apps -h'.`,
-  nameRequired: `Option '--name' is required! For interactive mode, please use '--interactive' or '-i' flag. For more information please run the help command 'repotest apps --help' or 'repotest apps -h'.`,
-  redirectUrisRequired: `Option '--redirect-uris' is required! For interactive mode, please use '--interactive' or '-i' flag. For more information please run the help command 'repotest apps --help' or 'repotest apps -h'.`,
-  scopesRequired: `Option '--scopes' is required! For interactive mode, please use '--interactive' or '-i' flag. For more information please run the help command 'repotest apps --help' or 'repotest apps -h'.`,
-  useExperimental: `\n${chalk.redBright(
-    "All 'apps' commands are only accessible behind the '--experimental' flag.",
-  )}\n 
-The behaviour can change at any time, without prior notice. 
-You are kindly advised to use all the commands with caution.
-  
-${chalk.bold('Usage')}
-  ${chalk.italic('repotest apps <COMMAND> --experimental')}\n`,
-};
-
-export const CreateAppPromptData = {
-  SNYK_APP_NAME: {
-    name: SNYK_APP_NAME,
-    message: `Name of the Snyk App (visible to users when they install the Snyk App)?`,
-  },
-  SNYK_APP_REDIRECT_URIS: {
-    name: SNYK_APP_REDIRECT_URIS,
-    message: `Your Snyk App's redirect URIs (comma seprated list. ${chalk.yellowBright(
-      ' Ex: https://example1.com,https://example2.com',
-    )})?: `,
-  },
-  SNYK_APP_SCOPES: {
-    name: SNYK_APP_SCOPES,
-    message: `Your Snyk App's permission scopes (comma separated list. ${chalk.yellowBright(
-      ' Ex: org.read,org.report.read',
-    )})?: `,
-  },
-  SNYK_APP_ORG_ID: {
-    name: SNYK_APP_ORG_ID,
-    message:
-      'Please provide the org id under which you want to create your Snyk App: ',
-  },
-};
+// Number of function names to show in the end of an abbreviated call path
+export const CALL_PATH_TRAILING_ELEMENTS = 2;

@@ -1,31 +1,57 @@
-import chalk, { Chalk } from 'chalk';
-import { SEVERITY } from '../../../repotest-test/common';
+import { ScannedProject, DepTree } from '@repotest/cli-interface/legacy/common';
+import {
+  getContainerTargetFile,
+  getContainerProjectName,
+  getContainerName,
+  isContainer,
+} from '../container';
+import * as depGraphLib from '@repotest/dep-graph';
+import { MonitorMeta } from '../types';
+import { PluginMetadata } from '@repotest/cli-interface/legacy/plugin';
 
-interface IacOutputColors {
-  severities: SeverityColor;
-  failure: Chalk;
-  success: Chalk;
-  info: Chalk;
-  title: Chalk;
-  suggestion: Chalk;
+export function getNameDepTree(
+  scannedProject: ScannedProject,
+  depTree: DepTree,
+  meta: MonitorMeta,
+): string | undefined {
+  if (isContainer(scannedProject)) {
+    return getContainerName(scannedProject, meta);
+  }
+  return depTree.name;
 }
 
-type SeverityColor = {
-  [severity in SEVERITY]: Chalk;
-};
+export function getNameDepGraph(
+  scannedProject: ScannedProject,
+  depGraph: depGraphLib.DepGraph,
+  meta: MonitorMeta,
+): string | undefined {
+  if (isContainer(scannedProject)) {
+    return getContainerName(scannedProject, meta);
+  }
+  return depGraph.rootPkg?.name;
+}
 
-export const colors: IacOutputColors = {
-  severities: {
-    critical: chalk.magenta,
-    high: chalk.red,
-    medium: chalk.yellow,
-    low: chalk.reset,
-  },
-  failure: chalk.red,
-  success: chalk.green,
-  info: chalk.reset,
-  title: chalk.reset.bold,
-  suggestion: chalk.gray,
-};
+export function getProjectName(
+  scannedProject: ScannedProject,
+  meta: MonitorMeta,
+): string | undefined {
+  if (isContainer(scannedProject)) {
+    return getContainerProjectName(scannedProject, meta);
+  }
 
-export const contentPadding = ' '.repeat(2);
+  if (meta['project-name'] && scannedProject.meta?.projectName) {
+    return scannedProject.meta.projectName;
+  }
+
+  return meta['project-name'];
+}
+
+export function getTargetFile(
+  scannedProject: ScannedProject,
+  pluginMeta: PluginMetadata,
+): string | undefined {
+  if (isContainer(scannedProject)) {
+    return getContainerTargetFile(scannedProject);
+  }
+  return pluginMeta.targetFile;
+}

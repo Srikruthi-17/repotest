@@ -1,34 +1,42 @@
-import { IacProjectType } from '../../../iac/constants';
-import { State } from '../../../iac/test/v2/scan/policy-engine';
-import { AnnotatedIacIssue } from '../../../repotest-test/iac-test-result';
-import { SEVERITY } from '../../../repotest-test/legacy';
-import { IacOutputMeta } from '../../../types';
+import * as depGraphLib from '@repotest/dep-graph';
+import { ScanResult } from '../ecosystems/types';
+import { GitTarget, ContainerTarget } from '../project-metadata/types';
+import { DepTree } from '../types';
 
-export interface IacTestData {
-  resultsBySeverity: FormattedOutputResultsBySeverity;
-  metadata: IacOutputMeta | undefined;
-  counts: IacTestCounts;
+export interface PayloadBody {
+  depGraph?: depGraphLib.DepGraph; // missing for legacy endpoint (options.vulnEndpoint)
+  callGraph?: any;
+  policy?: string;
+  targetFile?: string;
+  targetFileRelativePath?: string;
+  targetReference?: string;
+  projectNameOverride?: string;
+  hasDevDependencies?: boolean;
+  originalProjectName?: string; // used only for display
+  foundProjectCount?: number; // used only for display
+  docker?: any;
+  displayTargetFile?: string;
+  target?: GitTarget | ContainerTarget | null;
 }
 
-export type FormattedOutputResultsBySeverity = {
-  [severity in keyof SEVERITY]?: FormattedOutputResult[];
-};
-
-export type FormattedOutputResult = {
-  issue: AnnotatedIacIssue;
-  targetFile: string;
-  projectType: IacProjectType | State.InputTypeEnum;
-};
-
-export interface IacTestCounts {
-  ignores: number;
-  filesWithIssues: number;
-  filesWithoutIssues: number;
-  issues: number;
-  issuesBySeverity: { [severity in SEVERITY]: number };
+export interface TestDependenciesRequest {
+  scanResult: ScanResult;
 }
 
-export type IaCTestFailure = {
-  filePath: string;
-  failureReason: string | undefined;
-};
+export interface DepTreeFromResolveDeps extends DepTree {
+  numDependencies: number;
+  pluck: any;
+}
+
+export interface Payload {
+  method: string;
+  url: string;
+  json: boolean;
+  headers: {
+    'x-is-ci': boolean;
+    authorization: string;
+  };
+  body?: PayloadBody | TestDependenciesRequest;
+  qs?: object | null;
+  modules?: DepTreeFromResolveDeps;
+}
