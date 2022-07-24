@@ -1,395 +1,766 @@
+Changelog
+=========
 
-3.1.0 / 2017-09-26
-==================
+### 2.18.1
 
-  * Add `DEBUG_HIDE_DATE` env var (#486)
-  * Remove ReDoS regexp in %o formatter (#504)
-  * Remove "component" from package.json
-  * Remove `component.json`
-  * Ignore package-lock.json
-  * Examples: fix colors printout
-  * Fix: browser detection
-  * Fix: spelling mistake (#496, @EdwardBetts)
+* Release Mar 22, 2017
 
-3.0.1 / 2017-08-24
-==================
+* [#3853](https://github.com/moment/moment/pull/3853) [misc] Fix invalid whitespace character causing inability to parse
+  moment.js
 
-  * Fix: Disable colors in Edge and Internet Explorer (#489)
+### 2.18.0 [See full changelog](https://gist.github.com/ichernev/78920c5a1e419fb28c6e4546d1b7235c)
 
-3.0.0 / 2017-08-08
-==================
+* Release Mar 18, 2017
 
-  * Breaking: Remove DEBUG_FD (#406)
-  * Breaking: Use `Date#toISOString()` instead to `Date#toUTCString()` when output is not a TTY (#418)
-  * Breaking: Make millisecond timer namespace specific and allow 'always enabled' output (#408)
-  * Addition: document `enabled` flag (#465)
-  * Addition: add 256 colors mode (#481)
-  * Addition: `enabled()` updates existing debug instances, add `destroy()` function (#440)
-  * Update: component: update "ms" to v2.0.0
-  * Update: separate the Node and Browser tests in Travis-CI
-  * Update: refactor Readme, fixed documentation, added "Namespace Colors" section, redid screenshots
-  * Update: separate Node.js and web browser examples for organization
-  * Update: update "browserify" to v14.4.0
-  * Fix: fix Readme typo (#473)
+## Features
 
-2.6.9 / 2017-09-22
-==================
+* [#3708](https://github.com/moment/moment/pull/3708) [feature] RFC2822 parsing
+* [#3611](https://github.com/moment/moment/pull/3611) [feature] Durations gain validity
+* [#3738](https://github.com/moment/moment/pull/3738) [feature] Enable relative time for multiple seconds, request [#2558](https://github.com/moment/moment/issues/2558)
+* [#3766](https://github.com/moment/moment/pull/3766) [feature] Add support for k and kk format parsing
 
-  * remove ReDoS regexp in %o formatter (#504)
+## Bugfixes
 
-2.6.8 / 2017-05-18
-==================
+* [#3643](https://github.com/moment/moment/pull/3643) [bugfix] Fixes [#3520](https://github.com/moment/moment/issues/3520), parseZone incorrectly handled minutes under 16
+* [#3710](https://github.com/moment/moment/pull/3710) [bugfix] Fixes [#3632](https://github.com/moment/moment/issues/3632), toISOString returns null for invalid date
+* [#3787](https://github.com/moment/moment/pull/3787) [bugfix] Fixes [#3717](https://github.com/moment/moment/issues/3717), ensure day-of-year is non-zero
+* [#3780](https://github.com/moment/moment/pull/3780) [bugfix] Fixes [#3765](https://github.com/moment/moment/issues/3765): Ensure year 0 is formatted with YYYY
+* [#3806](https://github.com/moment/moment/pull/3806) [bugfix] Fixes [#3805](https://github.com/moment/moment/issues/3805), fix locale month getters for standalone/format cases
 
-  * Fix: Check for undefined on browser globals (#462, @marbemac)
+7 new locales, many locale improvements and some misc changes
 
-2.6.7 / 2017-05-16
-==================
+### 2.17.1 [Also available here](https://gist.github.com/ichernev/f38280b2b29c4932914a6d3a4e50bfb2)
+* Release Dec 03, 2016
 
-  * Fix: Update ms to 2.0.0 to fix regular expression denial of service vulnerability (#458, @hubdotcom)
-  * Fix: Inline extend function in node implementation (#452, @dougwilson)
-  * Docs: Fix typo (#455, @msasad)
+* [#3638](https://github.com/moment/moment/pull/3638) [misc] TS: Make typescript definitions work with 1.x
+* [#3628](https://github.com/moment/moment/pull/3628) [misc] Adds "sign CLA" link to `CONTRIBUTING.md`
+* [#3640](https://github.com/moment/moment/pull/3640) [misc] Fix locale issues
 
-2.6.5 / 2017-04-27
-==================
-  
-  * Fix: null reference check on window.documentElement.style.WebkitAppearance (#447, @thebigredgeek)
-  * Misc: clean up browser reference checks (#447, @thebigredgeek)
-  * Misc: add npm-debug.log to .gitignore (@thebigredgeek)
+### 2.17.0 [Also available here](https://gist.github.com/ichernev/ed58f76fb95205eeac653d719972b90c)
+* Release Nov 22, 2016
 
+* [#3435](https://github.com/moment/moment/pull/3435) [new locale] yo: Yoruba (Nigeria) locale
+* [#3595](https://github.com/moment/moment/pull/3595) [bugfix] Fix accidental reference to global "value" variable
+* [#3506](https://github.com/moment/moment/pull/3506) [bugfix] Fix invalid moments returning valid dates to method calls
+* [#3563](https://github.com/moment/moment/pull/3563) [locale] ca: Change future relative time
+* [#3504](https://github.com/moment/moment/pull/3504) [tests] Fixes [#3463](https://github.com/moment/moment/issues/3463), parseZone not handling Z correctly (tests only)
+* [#3591](https://github.com/moment/moment/pull/3591) [misc] typescript: update typescript to 2.0.8, add strictNullChecks=true
+* [#3597](https://github.com/moment/moment/pull/3597) [misc] Fixed capitalization in nuget spec
+
+### 2.16.0 [See full changelog](https://gist.github.com/ichernev/17bffc1005a032cb1a8ac4c1558b4994)
+* Release Nov 9, 2016
+
+## Features
+* [#3530](https://github.com/moment/moment/pull/3530) [feature] Check whether input is date before checking if format is array
+* [#3515](https://github.com/moment/moment/pull/3515) [feature] Fix [#2300](https://github.com/moment/moment/issues/2300): Default to current week.
 
-2.6.4 / 2017-04-20
-==================
+## Bugfixes
+* [#3546](https://github.com/moment/moment/pull/3546) [bugfix] Implement lazy-loading of child locales with missing prents
+* [#3523](https://github.com/moment/moment/pull/3523) [bugfix] parseZone should handle UTC
+* [#3502](https://github.com/moment/moment/pull/3502) [bugfix] Fix [#3500](https://github.com/moment/moment/issues/3500): ISO 8601 parsing should match the full string, not the beginning of the string.
+* [#3581](https://github.com/moment/moment/pull/3581) [bugfix] Fix parseZone, redo [#3504](https://github.com/moment/moment/issues/3504), fix [#3463](https://github.com/moment/moment/issues/3463)
+
+## New Locales
+* [#3416](https://github.com/moment/moment/pull/3416) [new locale] nl-be: Dutch (Belgium) locale
+* [#3393](https://github.com/moment/moment/pull/3393) [new locale] ar-dz: Arabic (Algeria) locale
+* [#3342](https://github.com/moment/moment/pull/3342) [new locale] tet: Tetun Dili (East Timor) locale
+
+And more locale, build and typescript improvements
 
-  * Fix: bug that would occur if process.env.DEBUG is a non-string value. (#444, @LucianBuzzo)
-  * Chore: ignore bower.json in npm installations. (#437, @joaovieira)
-  * Misc: update "ms" to v0.7.3 (@tootallnate)
+### 2.15.2
+* Release Oct 23, 2016
+* [#3525](https://github.com/moment/moment/pull/3525) Speedup month standalone/format regexes **(IMPORTANT)**
+* [#3466](https://github.com/moment/moment/pull/3466) Fix typo of Javanese
 
-2.6.3 / 2017-03-13
-==================
+### 2.15.1
+* Release Sept 20, 2016
+* [#3438](https://github.com/moment/moment/pull/3438) Fix locale autoload, revert [#3344](https://github.com/moment/moment/pull/3344)
 
-  * Fix: Electron reference to `process.env.DEBUG` (#431, @paulcbetts)
-  * Docs: Changelog fix (@thebigredgeek)
+### 2.15.0 [See full changelog](https://gist.github.com/ichernev/10e1c5bf647545c72ca30e9628a09ed3)
+- Release Sept 12, 2016
 
-2.6.2 / 2017-03-10
-==================
+## New Locales
+* [#3255](https://github.com/moment/moment/pull/3255) [new locale] mi: Maori language
+* [#3267](https://github.com/moment/moment/pull/3267) [new locale] ar-ly: Arabic (Libya) locale
+* [#3333](https://github.com/moment/moment/pull/3333) [new locale] zh-hk: Chinese (Hong Kong) locale
 
-  * Fix: DEBUG_MAX_ARRAY_LENGTH (#420, @slavaGanzin)
-  * Docs: Add backers and sponsors from Open Collective (#422, @piamancini)
-  * Docs: Add Slackin invite badge (@tootallnate)
+## Bugfixes
+* [#3276](https://github.com/moment/moment/pull/3276) [bugfix] duration: parser: Support ms durations in .NET syntax
+* [#3312](https://github.com/moment/moment/pull/3312) [bugfix] locales: Enable locale-data getters without moment (fixes [#3284](https://github.com/moment/moment/issues/3284))
+* [#3381](https://github.com/moment/moment/pull/3381) [bugfix] parsing: Fix parseZone without timezone in string, fixes [#3083](https://github.com/moment/moment/issues/3083)
+* [#3383](https://github.com/moment/moment/pull/3383) [bugfix] toJSON: Fix isValid so that toJSON works after a moment is frozen
+* [#3427](https://github.com/moment/moment/pull/3427) [bugfix] ie8: Fix IE8 (regression in 2.14.x)
 
-2.6.1 / 2017-02-10
-==================
+## Packaging
+* [#3299](https://github.com/moment/moment/pull/3299) [pkg] npm: Do not include .npmignore in npm package
+* [#3273](https://github.com/moment/moment/pull/3273) [pkg] jspm: Include moment.d.ts file in package
+* [#3344](https://github.com/moment/moment/pull/3344) [pkg] exports: use module.require for nodejs
 
-  * Fix: Module's `export default` syntax fix for IE8 `Expected identifier` error
-  * Fix: Whitelist DEBUG_FD for values 1 and 2 only (#415, @pi0)
-  * Fix: IE8 "Expected identifier" error (#414, @vgoma)
-  * Fix: Namespaces would not disable once enabled (#409, @musikov)
+Also some locale and typescript improvements
 
-2.6.0 / 2016-12-28
-==================
+### 2.14.1
+- Release July 20, 2016
+* [#3280](https://github.com/moment/moment/pull/3280) Fix typescript definitions
+
 
-  * Fix: added better null pointer checks for browser useColors (@thebigredgeek)
-  * Improvement: removed explicit `window.debug` export (#404, @tootallnate)
-  * Improvement: deprecated `DEBUG_FD` environment variable (#405, @tootallnate)
+### 2.14.0 [See full changelog](https://gist.github.com/ichernev/812e79ac36a7829a22598fe964bfc18a)
+
+- Release July 20, 2016
+
+## New Features
+* [#3233](https://github.com/moment/moment/pull/3233) Introduce month.isFormat for format/standalone discovery
+* [#2848](https://github.com/moment/moment/pull/2848) Allow user to get/set the rounding method used when calculating relative time
+* [#3112](https://github.com/moment/moment/pull/3112) optimize configFromStringAndFormat
+* [#3147](https://github.com/moment/moment/pull/3147) Call calendar format function with moment context
+* [#3160](https://github.com/moment/moment/pull/3160) deprecate isDSTShifted
+* [#3175](https://github.com/moment/moment/pull/3175) make moment calendar extensible with ad-hoc options
+* [#3191](https://github.com/moment/moment/pull/3191) toDate returns a copy of the internal date object
+* [#3192](https://github.com/moment/moment/pull/3192) Adding support for rollup import.
+* [#3238](https://github.com/moment/moment/pull/3238) Handle empty object and empty array for creation as now
+* [#3082](https://github.com/moment/moment/pull/3082) Use relative AMD moment dependency
+
+## Bugfixes
+* [#3241](https://github.com/moment/moment/pull/3241) Escape all 24 mixed pieces, not only first 12 in computeMonthsParse
+* [#3008](https://github.com/moment/moment/pull/3008) Object setter orders sets based on size of unit
+* [#3177](https://github.com/moment/moment/pull/3177) Bug Fix [#2704](https://github.com/moment/moment/pull/2704) - isoWeekday(String) inconsistent with isoWeekday(Number)
+* [#3230](https://github.com/moment/moment/pull/3230) fix passing date with format string to ignore format string
+* [#3232](https://github.com/moment/moment/pull/3232) Fix negative 0 in certain diff cases
+* [#3235](https://github.com/moment/moment/pull/3235) Use proper locale inheritance for the base locale, fixes [#3137](https://github.com/moment/moment/pull/3137)
 
-2.5.2 / 2016-12-25
-==================
+Plus es-do locale and locale bugfixes
+
+### 2.13.0 [See full changelog](https://gist.github.com/ichernev/0132fcf5b61f7fc140b0bb0090480d49)
+- Release April 18, 2016
+
+## Enhancements:
+* [#2982](https://github.com/moment/moment/pull/2982) Add 'date' as alias to 'day' for startOf() and endOf().
+* [#2955](https://github.com/moment/moment/pull/2955) Add parsing negative components in durations when ISO 8601
+* [#2991](https://github.com/moment/moment/pull/2991) isBetween support for both open and closed intervals
+* [#3105](https://github.com/moment/moment/pull/3105) Add localeSorted argument to weekday listers
+* [#3102](https://github.com/moment/moment/pull/3102) Add k and kk formatting tokens
 
-  * Fix: reference error on window within webworkers (#393, @KlausTrainer)
-  * Docs: fixed README typo (#391, @lurch)
-  * Docs: added notice about v3 api discussion (@thebigredgeek)
+## Bugfixes
+* [#3109](https://github.com/moment/moment/pull/3109) Fix [#1756](https://github.com/moment/moment/issues/1756) Resolved thread-safe issue on server side.
+* [#3078](https://github.com/moment/moment/pull/3078) Fix parsing for months/weekdays with weird characters
+* [#3098](https://github.com/moment/moment/pull/3098) Use Z suffix when in UTC mode ([#3020](https://github.com/moment/moment/issues/3020))
+* [#2995](https://github.com/moment/moment/pull/2995) Fix floating point rounding errors in durations
+* [#3059](https://github.com/moment/moment/pull/3059) fix bug where diff returns -0 in month-related diffs
+* [#3045](https://github.com/moment/moment/pull/3045) Fix mistaking any input for 'a' token
+* [#2877](https://github.com/moment/moment/pull/2877) Use explicit .valueOf() calls instead of coercion
+* [#3036](https://github.com/moment/moment/pull/3036) Year setter should keep time when DST changes
 
-2.5.1 / 2016-12-20
-==================
-
-  * Fix: babel-core compatibility
-
-2.5.0 / 2016-12-20
-==================
-
-  * Fix: wrong reference in bower file (@thebigredgeek)
-  * Fix: webworker compatibility (@thebigredgeek)
-  * Fix: output formatting issue (#388, @kribblo)
-  * Fix: babel-loader compatibility (#383, @escwald)
-  * Misc: removed built asset from repo and publications (@thebigredgeek)
-  * Misc: moved source files to /src (#378, @yamikuronue)
-  * Test: added karma integration and replaced babel with browserify for browser tests (#378, @yamikuronue)
-  * Test: coveralls integration (#378, @yamikuronue)
-  * Docs: simplified language in the opening paragraph (#373, @yamikuronue)
-
-2.4.5 / 2016-12-17
-==================
-
-  * Fix: `navigator` undefined in Rhino (#376, @jochenberger)
-  * Fix: custom log function (#379, @hsiliev)
-  * Improvement: bit of cleanup + linting fixes (@thebigredgeek)
-  * Improvement: rm non-maintainted `dist/` dir (#375, @freewil)
-  * Docs: simplified language in the opening paragraph. (#373, @yamikuronue)
-
-2.4.4 / 2016-12-14
-==================
-
-  * Fix: work around debug being loaded in preload scripts for electron (#368, @paulcbetts)
-
-2.4.3 / 2016-12-14
-==================
-
-  * Fix: navigation.userAgent error for react native (#364, @escwald)
-
-2.4.2 / 2016-12-14
-==================
-
-  * Fix: browser colors (#367, @tootallnate)
-  * Misc: travis ci integration (@thebigredgeek)
-  * Misc: added linting and testing boilerplate with sanity check (@thebigredgeek)
-
-2.4.1 / 2016-12-13
-==================
-
-  * Fix: typo that broke the package (#356)
-
-2.4.0 / 2016-12-13
-==================
-
-  * Fix: bower.json references unbuilt src entry point (#342, @justmatt)
-  * Fix: revert "handle regex special characters" (@tootallnate)
-  * Feature: configurable util.inspect()`options for NodeJS (#327, @tootallnate)
-  * Feature: %O`(big O) pretty-prints objects (#322, @tootallnate)
-  * Improvement: allow colors in workers (#335, @botverse)
-  * Improvement: use same color for same namespace. (#338, @lchenay)
-
-2.3.3 / 2016-11-09
-==================
-
-  * Fix: Catch `JSON.stringify()` errors (#195, Jovan Alleyne)
-  * Fix: Returning `localStorage` saved values (#331, Levi Thomason)
-  * Improvement: Don't create an empty object when no `process` (Nathan Rajlich)
-
-2.3.2 / 2016-11-09
-==================
-
-  * Fix: be super-safe in index.js as well (@TooTallNate)
-  * Fix: should check whether process exists (Tom Newby)
-
-2.3.1 / 2016-11-09
-==================
-
-  * Fix: Added electron compatibility (#324, @paulcbetts)
-  * Improvement: Added performance optimizations (@tootallnate)
-  * Readme: Corrected PowerShell environment variable example (#252, @gimre)
-  * Misc: Removed yarn lock file from source control (#321, @fengmk2)
-
-2.3.0 / 2016-11-07
-==================
-
-  * Fix: Consistent placement of ms diff at end of output (#215, @gorangajic)
-  * Fix: Escaping of regex special characters in namespace strings (#250, @zacronos)
-  * Fix: Fixed bug causing crash on react-native (#282, @vkarpov15)
-  * Feature: Enabled ES6+ compatible import via default export (#212 @bucaran)
-  * Feature: Added %O formatter to reflect Chrome's console.log capability (#279, @oncletom)
-  * Package: Update "ms" to 0.7.2 (#315, @DevSide)
-  * Package: removed superfluous version property from bower.json (#207 @kkirsche)
-  * Readme: fix USE_COLORS to DEBUG_COLORS
-  * Readme: Doc fixes for format string sugar (#269, @mlucool)
-  * Readme: Updated docs for DEBUG_FD and DEBUG_COLORS environment variables (#232, @mattlyons0)
-  * Readme: doc fixes for PowerShell (#271 #243, @exoticknight @unreadable)
-  * Readme: better docs for browser support (#224, @matthewmueller)
-  * Tooling: Added yarn integration for development (#317, @thebigredgeek)
-  * Misc: Renamed History.md to CHANGELOG.md (@thebigredgeek)
-  * Misc: Added license file (#226 #274, @CantemoInternal @sdaitzman)
-  * Misc: Updated contributors (@thebigredgeek)
-
-2.2.0 / 2015-05-09
-==================
-
-  * package: update "ms" to v0.7.1 (#202, @dougwilson)
-  * README: add logging to file example (#193, @DanielOchoa)
-  * README: fixed a typo (#191, @amir-s)
-  * browser: expose `storage` (#190, @stephenmathieson)
-  * Makefile: add a `distclean` target (#189, @stephenmathieson)
-
-2.1.3 / 2015-03-13
-==================
-
-  * Updated stdout/stderr example (#186)
-  * Updated example/stdout.js to match debug current behaviour
-  * Renamed example/stderr.js to stdout.js
-  * Update Readme.md (#184)
-  * replace high intensity foreground color for bold (#182, #183)
-
-2.1.2 / 2015-03-01
-==================
-
-  * dist: recompile
-  * update "ms" to v0.7.0
-  * package: update "browserify" to v9.0.3
-  * component: fix "ms.js" repo location
-  * changed bower package name
-  * updated documentation about using debug in a browser
-  * fix: security error on safari (#167, #168, @yields)
-
-2.1.1 / 2014-12-29
-==================
-
-  * browser: use `typeof` to check for `console` existence
-  * browser: check for `console.log` truthiness (fix IE 8/9)
-  * browser: add support for Chrome apps
-  * Readme: added Windows usage remarks
-  * Add `bower.json` to properly support bower install
-
-2.1.0 / 2014-10-15
-==================
-
-  * node: implement `DEBUG_FD` env variable support
-  * package: update "browserify" to v6.1.0
-  * package: add "license" field to package.json (#135, @panuhorsmalahti)
-
-2.0.0 / 2014-09-01
-==================
-
-  * package: update "browserify" to v5.11.0
-  * node: use stderr rather than stdout for logging (#29, @stephenmathieson)
-
-1.0.4 / 2014-07-15
-==================
-
-  * dist: recompile
-  * example: remove `console.info()` log usage
-  * example: add "Content-Type" UTF-8 header to browser example
-  * browser: place %c marker after the space character
-  * browser: reset the "content" color via `color: inherit`
-  * browser: add colors support for Firefox >= v31
-  * debug: prefer an instance `log()` function over the global one (#119)
-  * Readme: update documentation about styled console logs for FF v31 (#116, @wryk)
-
-1.0.3 / 2014-07-09
-==================
-
-  * Add support for multiple wildcards in namespaces (#122, @seegno)
-  * browser: fix lint
-
-1.0.2 / 2014-06-10
-==================
-
-  * browser: update color palette (#113, @gscottolson)
-  * common: make console logging function configurable (#108, @timoxley)
-  * node: fix %o colors on old node <= 0.8.x
-  * Makefile: find node path using shell/which (#109, @timoxley)
-
-1.0.1 / 2014-06-06
-==================
-
-  * browser: use `removeItem()` to clear localStorage
-  * browser, node: don't set DEBUG if namespaces is undefined (#107, @leedm777)
-  * package: add "contributors" section
-  * node: fix comment typo
-  * README: list authors
-
-1.0.0 / 2014-06-04
-==================
-
-  * make ms diff be global, not be scope
-  * debug: ignore empty strings in enable()
-  * node: make DEBUG_COLORS able to disable coloring
-  * *: export the `colors` array
-  * npmignore: don't publish the `dist` dir
-  * Makefile: refactor to use browserify
-  * package: add "browserify" as a dev dependency
-  * Readme: add Web Inspector Colors section
-  * node: reset terminal color for the debug content
-  * node: map "%o" to `util.inspect()`
-  * browser: map "%j" to `JSON.stringify()`
-  * debug: add custom "formatters"
-  * debug: use "ms" module for humanizing the diff
-  * Readme: add "bash" syntax highlighting
-  * browser: add Firebug color support
-  * browser: add colors for WebKit browsers
-  * node: apply log to `console`
-  * rewrite: abstract common logic for Node & browsers
-  * add .jshintrc file
+Plus 3 new locales and locale fixes.
 
-0.8.1 / 2014-04-14
-==================
+### 2.12.0 [See full changelog](https://gist.github.com/ichernev/6e5bfdf8d6522fc4ac73)
 
-  * package: re-add the "component" section
+- Release March 7, 2016
 
-0.8.0 / 2014-03-30
-==================
+## Enhancements:
+* [#2932](https://github.com/moment/moment/pull/2932) List loaded locales
+* [#2818](https://github.com/moment/moment/pull/2818) Parse ISO-8061 duration containing both day and week values
+* [#2774](https://github.com/moment/moment/pull/2774) Implement locale inheritance and locale updating
 
-  * add `enable()` method for nodejs. Closes #27
-  * change from stderr to stdout
-  * remove unnecessary index.js file
+## Bugfixes:
+* [#2970](https://github.com/moment/moment/pull/2970) change add subtract to handle decimal values by rounding
+* [#2887](https://github.com/moment/moment/pull/2887) Fix toJSON casting of invalid moment
+* [#2897](https://github.com/moment/moment/pull/2897) parse string arguments for month() correctly, closes #2884
+* [#2946](https://github.com/moment/moment/pull/2946) Fix usage suggestions for min and max
 
-0.7.4 / 2013-11-13
-==================
+## New locales:
+* [#2917](https://github.com/moment/moment/pull/2917) Locale Punjabi(Gurmukhi) India format conversion
 
-  * remove "browserify" key from package.json (fixes something in browserify)
+And more
 
-0.7.3 / 2013-10-30
-==================
+### 2.11.2 (Fix ReDoS attack vector)
 
-  * fix: catch localStorage security error when cookies are blocked (Chrome)
-  * add debug(err) support. Closes #46
-  * add .browser prop to package.json. Closes #42
+- Release February 7, 2016
 
-0.7.2 / 2013-02-06
-==================
+* [#2939](https://github.com/moment/moment/pull/2939) use full-string match to speed up aspnet regex match
 
-  * fix package.json
-  * fix: Mobile Safari (private mode) is broken with debug
-  * fix: Use unicode to send escape character to shell instead of octal to work with strict mode javascript
+### 2.11.1 [See full changelog](https://gist.github.com/ichernev/8ec3ee25b749b4cff3c2)
 
-0.7.1 / 2013-02-05
-==================
+- Release January 9, 2016
 
-  * add repository URL to package.json
-  * add DEBUG_COLORED to force colored output
-  * add browserify support
-  * fix component. Closes #24
+## Bugfixes:
+* [#2881](https://github.com/moment/moment/pull/2881) Revert "Merge pull request #2746 from mbad0la:develop" Sep->Sept
+* [#2868](https://github.com/moment/moment/pull/2868) Add format and parse token Y, so it actually works
+* [#2865](https://github.com/moment/moment/pull/2865) Use typeof checks for undefined for global variables
+* [#2858](https://github.com/moment/moment/pull/2858) Fix Date mocking regression introduced in 2.11.0
+* [#2864](https://github.com/moment/moment/pull/2864) Include changelog in npm release
+* [#2830](https://github.com/moment/moment/pull/2830) dep: add grunt-cli
+* [#2869](https://github.com/moment/moment/pull/2869) Fix months parsing for some locales
 
-0.7.0 / 2012-05-04
-==================
+### 2.11.0 [See full changelog](https://gist.github.com/ichernev/6594bc29719dde6b2f66)
 
-  * Added .component to package.json
-  * Added debug.component.js build
+- Release January 4, 2016
 
-0.6.0 / 2012-03-16
-==================
+* [#2624](https://github.com/moment/moment/pull/2624) Proper handling of invalid moments
+* [#2634](https://github.com/moment/moment/pull/2634) Fix strict month parsing issue in cs,ru,sk
+* [#2735](https://github.com/moment/moment/pull/2735) Reset the locale back to 'en' after defining all locales in min/locales.js
+* [#2702](https://github.com/moment/moment/pull/2702) Week rework
+* [#2746](https://github.com/moment/moment/pull/2746) Changed September Abbreviation to "Sept" in locale-specific english
+  files and default locale file
+* [#2646](https://github.com/moment/moment/pull/2646) Fix [#2645](https://github.com/moment/moment/pull/2645) - invalid dates pre-1970
 
-  * Added support for "-" prefix in DEBUG [Vinay Pulim]
-  * Added `.enabled` flag to the node version [TooTallNate]
+* [#2641](https://github.com/moment/moment/pull/2641) Implement basic format and comma as ms separator in ISO 8601
+* [#2665](https://github.com/moment/moment/pull/2665) Implement stricter weekday parsing
+* [#2700](https://github.com/moment/moment/pull/2700) Add [Hh]mm and [Hh]mmss formatting tokens, so you can parse 123 with
+  hmm for example
+* [#2565](https://github.com/moment/moment/pull/2565) [#2835](https://github.com/moment/moment/pull/2835) Expose arguments used for moment creation with creationData
+  (fix [#2443](https://github.com/moment/moment/pull/2443))
+* [#2648](https://github.com/moment/moment/pull/2648) fix issue [#2640](https://github.com/moment/moment/pull/2640): support instanceof operator
+* [#2709](https://github.com/moment/moment/pull/2709) Add isSameOrAfter and isSameOrBefore comparison methods
+* [#2721](https://github.com/moment/moment/pull/2721) Fix moment creation from object with strings values
+* [#2740](https://github.com/moment/moment/pull/2740) Enable 'd hh:mm:ss.sss' format for durations
+* [#2766](https://github.com/moment/moment/pull/2766) [#2833](https://github.com/moment/moment/pull/2833) Alternate Clock Source Support
 
-0.5.0 / 2012-02-02
-==================
+### 2.10.6
 
-  * Added: humanize diffs. Closes #8
-  * Added `debug.disable()` to the CS variant
-  * Removed padding. Closes #10
-  * Fixed: persist client-side variant again. Closes #9
+- Release July 28, 2015
 
-0.4.0 / 2012-02-01
-==================
+[#2515](https://github.com/moment/moment/pull/2515) Fix regression introduced
+in `2.10.5` related to `moment.ISO_8601` parsing.
 
-  * Added browser variant support for older browsers [TooTallNate]
-  * Added `debug.enable('project:*')` to browser variant [TooTallNate]
-  * Added padding to diff (moved it to the right)
+### 2.10.5 [See full changelog](https://gist.github.com/ichernev/6ec13ac7efc396da44b2)
 
-0.3.0 / 2012-01-26
-==================
+- Release July 26, 2015
 
-  * Added millisecond diff when isatty, otherwise UTC string
+Important changes:
+* [#2357](https://github.com/moment/moment/pull/2357) Improve unit bubbling for ISO dates
+  this fixes day to year conversions to work around end-of-year (~365 days). As
+  a side effect 365 days is 11 months and 30 days, and 366 days is one year.
+* [#2438](https://github.com/moment/moment/pull/2438) Fix inconsistent moment.min and moment.max results
+  Return invalid result if any of the inputs is invalid
+* [#2494](https://github.com/moment/moment/pull/2494) Fix two digit year parsing with YYYY format
+  This brings the benefits of YY to YYYY
+* [#2368](https://github.com/moment/moment/pull/2368) perf: use faster form of copying dates, across the board improvement
 
-0.2.0 / 2012-01-22
-==================
 
-  * Added wildcard support
+### 2.10.3 [See full changelog](https://gist.github.com/ichernev/f264b9bed5b00f8b1b7f)
 
-0.1.0 / 2011-12-02
-==================
+- Release May 13, 2015
 
-  * Added: remove colors unless stderr isatty [TooTallNate]
+* add `moment.fn.to` and `moment.fn.toNow` (similar to `from` and `fromNow`)
+* new locales (Sinhalese (si), Montenegrin (me), Javanese (ja))
+* performance improvements
 
-0.0.1 / 2010-01-03
-==================
+### 2.10.2
 
-  * Initial release
+- Release April 9, 2015
+
+* fixed moment-with-locales in browser env caused by esperanto change
+
+### 2.10.1
+
+* regression: Add moment.duration.fn back
+
+### 2.10.0
+
+Ported code to es6 modules.
+
+### 2.9.0 [See full changelog](https://gist.github.com/ichernev/0c9a9b49951111a27ce7)
+
+- Release January 8, 2015
+
+languages:
+* [2104](https://github.com/moment/moment/issues/2104) Frisian (fy) language file with unit test
+* [2097](https://github.com/moment/moment/issues/2097) add ar-tn locale
+
+deprecations:
+* [2074](https://github.com/moment/moment/issues/2074) Implement `moment.fn.utcOffset`, deprecate `moment.fn.zone`
+
+features:
+* [2088](https://github.com/moment/moment/issues/2088) add moment.fn.isBetween
+* [2054](https://github.com/moment/moment/issues/2054) Call updateOffset when creating moment (needed for default timezone in
+  moment-timezone)
+* [1893](https://github.com/moment/moment/issues/1893) Add moment.isDate method
+* [1825](https://github.com/moment/moment/issues/1825) Implement toJSON function on Duration
+* [1809](https://github.com/moment/moment/issues/1809) Allowing moment.set() to accept a hash of units
+* [2128](https://github.com/moment/moment/issues/2128) Add firstDayOfWeek, firstDayOfYear locale getters
+* [2131](https://github.com/moment/moment/issues/2131) Add quarter diff support
+
+Some bugfixes and language improvements -- [full changelog](https://gist.github.com/ichernev/0c9a9b49951111a27ce7)
+
+### 2.8.4 [See full changelog](https://gist.github.com/ichernev/a4fcb0a46d74e4b9b996)
+
+- Release November 19, 2014
+
+Features:
+
+* [#2000](https://github.com/moment/moment/issues/2000) Add LTS localised format that includes seconds
+* [#1960](https://github.com/moment/moment/issues/1960) added formatToken 'x' for unix offset in milliseconds #1938
+* [#1965](https://github.com/moment/moment/issues/1965) Support 24:00:00.000 to mean next day, at midnight.
+* [#2002](https://github.com/moment/moment/issues/2002) Accept 'date' key when creating moment with object
+* [#2009](https://github.com/moment/moment/issues/2009) Use native toISOString when we can
+
+Some bugfixes and language improvements -- [full changelog](https://gist.github.com/ichernev/a4fcb0a46d74e4b9b996)
+
+### 2.8.3
+
+- Release September 5, 2014
+
+Bugfixes:
+
+* [#1801](https://github.com/moment/moment/issues/1801) proper pluralization for Arabic
+* [#1833](https://github.com/moment/moment/issues/1833) improve spm integration
+* [#1871](https://github.com/moment/moment/issues/1871) fix zone bug caused by Firefox 24
+* [#1882](https://github.com/moment/moment/issues/1882) Use hh:mm in Czech
+* [#1883](https://github.com/moment/moment/issues/1883) Fix 2.8.0 regression in duration as conversions
+* [#1890](https://github.com/moment/moment/issues/1890) Faster travis builds
+* [#1892](https://github.com/moment/moment/issues/1892) Faster isBefore/After/Same
+* [#1848](https://github.com/moment/moment/issues/1848) Fix flaky month diffs
+* [#1895](https://github.com/moment/moment/issues/1895) Fix 2.8.0 regression in moment.utc with format array
+* [#1896](https://github.com/moment/moment/issues/1896) Support setting invalid instance locale (noop)
+* [#1897](https://github.com/moment/moment/issues/1897) Support moment([str]) in addition to moment([int])
+
+### 2.8.2
+
+- Release August 22, 2014
+
+Minor bugfixes:
+
+* [#1874](https://github.com/moment/moment/issues/1874) use `Object.prototype.hasOwnProperty`
+  instead of `obj.hasOwnProperty` (ie8 bug)
+* [#1873](https://github.com/moment/moment/issues/1873) add `duration#toString()`
+* [#1859](https://github.com/moment/moment/issues/1859) better month/weekday names in norwegian
+* [#1812](https://github.com/moment/moment/issues/1812) meridiem parsing for greek
+* [#1804](https://github.com/moment/moment/issues/1804) spanish del -> de
+* [#1800](https://github.com/moment/moment/issues/1800) korean LT improvement
+
+### 2.8.1
+
+- Release August 1, 2014
+
+* bugfix [#1813](https://github.com/moment/moment/issues/1813): fix moment().lang([key]) incompatibility
+
+### 2.8.0 [See changelog](https://gist.github.com/ichernev/ac3899324a5fa6c8c9b4)
+
+- Release July 31, 2014
+
+* incompatible changes
+    * [#1761](https://github.com/moment/moment/issues/1761): moments created without a language are no longer following the global language, in case it changes. Only newly created moments take the global language by default. In case you're affected by this, wait, comment on [#1797](https://github.com/moment/moment/issues/1797) and wait for a proper reimplementation
+    * [#1642](https://github.com/moment/moment/issues/1642): 45 days is no longer "a month" according to humanize, cutoffs for month, and year have changed. Hopefully your code does not depend on a particular answer from humanize (which it shouldn't anyway)
+    * [#1784](https://github.com/moment/moment/issues/1784): if you use the human readable English datetime format in a weird way (like storing them in a database) that would break when the format changes you're at risk.
+
+* deprecations (old behavior will be dropped in 3.0)
+    * [#1761](https://github.com/moment/moment/issues/1761) `lang` is renamed to `locale`, `langData` -> `localeData`. Also there is now `defineLocale` that should be used when creating new locales
+    * [#1763](https://github.com/moment/moment/issues/1763) `add(unit, value)` and `subtract(unit, value)` are now deprecated. Use `add(value, unit)` and `subtract(value, unit)` instead.
+    * [#1759](https://github.com/moment/moment/issues/1759) rename `duration.toIsoString` to `duration.toISOString`. The js standard library and moment's `toISOString` follow that convention.
+
+* new locales
+    * [#1789](https://github.com/moment/moment/issues/1789) Tibetan (bo)
+    * [#1786](https://github.com/moment/moment/issues/1786) Africaans (af)
+    * [#1778](https://github.com/moment/moment/issues/1778) Burmese (my)
+    * [#1727](https://github.com/moment/moment/issues/1727) Belarusian (be)
+
+* bugfixes, locale bugfixes, performance improvements, features
+
+### 2.7.0 [See changelog](https://gist.github.com/ichernev/b0a3d456d5a84c9901d7)
+
+- Release June 12, 2014
+
+* new languages
+
+  * [#1678](https://github.com/moment/moment/issues/1678) Bengali (bn)
+  * [#1628](https://github.com/moment/moment/issues/1628) Azerbaijani (az)
+  * [#1633](https://github.com/moment/moment/issues/1633) Arabic, Saudi Arabia (ar-sa)
+  * [#1648](https://github.com/moment/moment/issues/1648) Austrian German (de-at)
+
+* features
+
+  * [#1663](https://github.com/moment/moment/issues/1663) configurable relative time thresholds
+  * [#1554](https://github.com/moment/moment/issues/1554) support anchor time in moment.calendar
+  * [#1693](https://github.com/moment/moment/issues/1693) support moment.ISO_8601 as parsing format
+  * [#1637](https://github.com/moment/moment/issues/1637) add moment.min and moment.max and deprecate min/max instance methods
+  * [#1704](https://github.com/moment/moment/issues/1704) support string value in add/subtract
+  * [#1647](https://github.com/moment/moment/issues/1647) add spm support (package manager)
+
+* bugfixes
+
+### 2.6.0 [See changelog](https://gist.github.com/ichernev/10544682)
+
+- Release April 12 , 2014
+
+* languages
+  * [#1529](https://github.com/moment/moment/issues/1529) Serbian-Cyrillic (sr-cyr)
+  * [#1544](https://github.com/moment/moment/issues/1544), [#1546](https://github.com/moment/moment/issues/1546) Khmer Cambodia (km)
+
+* features
+    * [#1419](https://github.com/moment/moment/issues/1419), [#1468](https://github.com/moment/moment/issues/1468), [#1467](https://github.com/moment/moment/issues/1467), [#1546](https://github.com/moment/moment/issues/1546) better handling of timezone-d moments around DST
+    * [#1462](https://github.com/moment/moment/issues/1462) add weeksInYear and isoWeeksInYear
+    * [#1475](https://github.com/moment/moment/issues/1475) support ordinal parsing
+    * [#1499](https://github.com/moment/moment/issues/1499) composer support
+    * [#1577](https://github.com/moment/moment/issues/1577), [#1604](https://github.com/moment/moment/issues/1604) put Date parsing in moment.createFromInputFallback so it can be properly deprecated and controlled in the future
+    * [#1545](https://github.com/moment/moment/issues/1545) extract two-digit year parsing in moment.parseTwoDigitYear, so it can be overwritten
+    * [#1590](https://github.com/moment/moment/issues/1590) (see [#1574](https://github.com/moment/moment/issues/1574)) set AMD global before module definition to better support non AMD module dependencies used in AMD environment
+    * [#1589](https://github.com/moment/moment/issues/1589) remove global in Node.JS environment (was not working before, nobody complained, was scheduled for removal anyway)
+    * [#1586](https://github.com/moment/moment/issues/1586) support quarter setting and parsing
+
+* 18 bugs fixed
+
+### 2.5.1
+
+- Release January 22, 2014
+
+* languages
+  * [#1392](https://github.com/moment/moment/issues/1392) Armenian (hy-am)
+
+* bugfixes
+  * [#1429](https://github.com/moment/moment/issues/1429) fixes [#1423](https://github.com/moment/moment/issues/1423) weird chrome-32 bug with js object creation
+  * [#1421](https://github.com/moment/moment/issues/1421) remove html entities from Welsh
+  * [#1418](https://github.com/moment/moment/issues/1418) fixes [#1401](https://github.com/moment/moment/issues/1401) improved non-padded tokens in strict matching
+  * [#1417](https://github.com/moment/moment/issues/1417) fixes [#1404](https://github.com/moment/moment/issues/1404) handle buggy moment object created by property cloning
+  * [#1398](https://github.com/moment/moment/issues/1398) fixes [#1397](https://github.com/moment/moment/issues/1397) fix Arabic-like week number parsing
+  * [#1396](https://github.com/moment/moment/issues/1396) add leftZeroFill(4) to GGGG and gggg formats
+  * [#1373](https://github.com/moment/moment/issues/1373) use lowercase for months and days in Catalan
+
+* testing
+  * [#1374](https://github.com/moment/moment/issues/1374) run tests on multiple browser/os combos via SauceLabs and Travis
+
+### 2.5.0 [See changelog](https://gist.github.com/ichernev/8104451)
+
+- Release Dec 24, 2013
+
+* New languages
+  * Luxemburish (lb) [1247](https://github.com/moment/moment/issues/1247)
+  * Serbian (rs) [1319](https://github.com/moment/moment/issues/1319)
+  * Tamil (ta) [1324](https://github.com/moment/moment/issues/1324)
+  * Macedonian (mk) [1337](https://github.com/moment/moment/issues/1337)
+
+* Features
+  * [1311](https://github.com/moment/moment/issues/1311) Add quarter getter and format token `Q`
+  * [1303](https://github.com/moment/moment/issues/1303) strict parsing now respects number of digits per token (fix [1196](https://github.com/moment/moment/issues/1196))
+  * 0d30bb7 add jspm support
+  * [1347](https://github.com/moment/moment/issues/1347) improve zone parsing
+  * [1362](https://github.com/moment/moment/issues/1362) support merideam parsing in Korean
+
+* 22 bugfixes
+
+### 2.4.0
+
+- Release Oct 27, 2013
+
+* **Deprecate** globally exported moment, will be removed in next major
+* New languages
+  * Farose (fo) [#1206](https://github.com/moment/moment/issues/1206)
+  * Tagalog/Filipino (tl-ph) [#1197](https://github.com/moment/moment/issues/1197)
+  * Welsh (cy) [#1215](https://github.com/moment/moment/issues/1215)
+* Bugfixes
+  * properly handle Z at the end of iso RegExp [#1187](https://github.com/moment/moment/issues/1187)
+  * chinese meridian time improvements [#1076](https://github.com/moment/moment/issues/1076)
+  * fix language tests [#1177](https://github.com/moment/moment/issues/1177)
+  * remove some failing tests (that should have never existed :))
+    [#1185](https://github.com/moment/moment/issues/1185)
+    [#1183](https://github.com/moment/moment/issues/1183)
+  * handle russian noun cases in weird cases [#1195](https://github.com/moment/moment/issues/1195)
+
+### 2.3.1
+
+- Release Oct 9, 2013
+
+Removed a trailing comma [1169] and fixed a bug with `months`, `weekdays` getters [#1171](https://github.com/moment/moment/issues/1171).
+
+### 2.3.0 [See changelog](https://gist.github.com/ichernev/6864354)
+
+- Release Oct 7, 2013
+
+Changed isValid, added strict parsing.
+Week tokens parsing.
+
+### 2.2.1
+
+- Release Sep 12, 2013
+
+Fixed bug in string prototype test.
+Updated authors and contributors.
+
+### 2.2.0 [See changelog](https://gist.github.com/ichernev/00f837a9baf46a3565e4)
+
+- Release  Sep 11, 2013
+
+Added bower support.
+
+Language files now use UMD.
+
+Creating moment defaults to current date/month/year.
+
+Added a bundle of moment and all language files.
+
+### 2.1.0 [See changelog](https://gist.github.com/timrwood/b8c2d90d528eddb53ab5)
+
+- Release Jul 8, 2013
+
+Added better week support.
+
+Added ability to set offset with `moment#zone`.
+
+Added ability to set month or weekday from a string.
+
+Added `moment#min` and `moment#max`
+
+### 2.0.0 [See changelog](https://gist.github.com/timrwood/e72f2eef320ed9e37c51)
+
+- Release Feb 9, 2013
+
+Added short form localized tokens.
+
+Added ability to define language a string should be parsed in.
+
+Added support for reversed add/subtract arguments.
+
+Added support for `endOf('week')` and `startOf('week')`.
+
+Fixed the logic for `moment#diff(Moment, 'months')` and `moment#diff(Moment, 'years')`
+
+`moment#diff` now floors instead of rounds.
+
+Normalized `moment#toString`.
+
+Added `isSame`, `isAfter`, and `isBefore` methods.
+
+Added better week support.
+
+Added `moment#toJSON`
+
+Bugfix: Fixed parsing of first century dates
+
+Bugfix: Parsing 10Sep2001 should work as expected
+
+Bugfix: Fixed weirdness with `moment.utc()` parsing.
+
+Changed language ordinal method to return the number + ordinal instead of just the ordinal.
+
+Changed two digit year parsing cutoff to match strptime.
+
+Removed `moment#sod` and `moment#eod` in favor of `moment#startOf` and `moment#endOf`.
+
+Removed `moment.humanizeDuration()` in favor of `moment.duration().humanize()`.
+
+Removed the lang data objects from the top level namespace.
+
+Duplicate `Date` passed to `moment()` instead of referencing it.
+
+### 1.7.2 [See discussion](https://github.com/timrwood/moment/issues/456)
+
+- Release Oct 2, 2012
+
+Bugfixes
+
+### 1.7.1 [See discussion](https://github.com/timrwood/moment/issues/384)
+
+- Release Oct 1, 2012
+
+Bugfixes
+
+### 1.7.0 [See discussion](https://github.com/timrwood/moment/issues/288)
+
+- Release Jul 26, 2012
+
+Added `moment.fn.endOf()` and `moment.fn.startOf()`.
+
+Added validation via `moment.fn.isValid()`.
+
+Made formatting method 3x faster. http://jsperf.com/momentjs-cached-format-functions
+
+Add support for month/weekday callbacks in `moment.fn.format()`
+
+Added instance specific languages.
+
+Added two letter weekday abbreviations with the formatting token `dd`.
+
+Various language updates.
+
+Various bugfixes.
+
+### 1.6.0 [See discussion](https://github.com/timrwood/moment/pull/268)
+
+- Release Apr 26, 2012
+
+Added Durations.
+
+Revamped parser to support parsing non-separated strings (YYYYMMDD vs YYYY-MM-DD).
+
+Added support for millisecond parsing and formatting tokens (S SS SSS)
+
+Added a getter for `moment.lang()`
+
+Various bugfixes.
+
+There are a few things deprecated in the 1.6.0 release.
+
+1. The format tokens `z` and `zz` (timezone abbreviations like EST CST MST etc) will no longer be supported. Due to inconsistent browser support, we are unable to consistently produce this value. See [this issue](https://github.com/timrwood/moment/issues/162) for more background.
+
+2. The method `moment.fn.native` is deprecated in favor of `moment.fn.toDate`. There continue to be issues with Google Closure Compiler throwing errors when using `native`, even in valid instances.
+
+3. The way to customize am/pm strings is being changed. This would only affect you if you created a custom language file. For more information, see [this issue](https://github.com/timrwood/moment/pull/222).
+
+### 1.5.0 [See milestone](https://github.com/timrwood/moment/issues?milestone=10&page=1&state=closed)
+
+- Release Mar 20, 2012
+
+Added UTC mode.
+
+Added automatic ISO8601 parsing.
+
+Various bugfixes.
+
+### 1.4.0 [See milestone](https://github.com/timrwood/moment/issues?milestone=8&state=closed)
+
+- Release Feb 4, 2012
+
+Added `moment.fn.toDate` as a replacement for `moment.fn.native`.
+
+Added `moment.fn.sod` and `moment.fn.eod` to get the start and end of day.
+
+Various bugfixes.
+
+### 1.3.0 [See milestone](https://github.com/timrwood/moment/issues?milestone=7&state=closed)
+
+- Release Jan 5, 2012
+
+Added support for parsing month names in the current language.
+
+Added escape blocks for parsing tokens.
+
+Added `moment.fn.calendar` to format strings like 'Today 2:30 PM', 'Tomorrow 1:25 AM', and 'Last Sunday 4:30 AM'.
+
+Added `moment.fn.day` as a setter.
+
+Various bugfixes
+
+### 1.2.0 [See milestone](https://github.com/timrwood/moment/issues?milestone=4&state=closed)
+
+- Release Dec 7, 2011
+
+Added timezones to parser and formatter.
+
+Added `moment.fn.isDST`.
+
+Added `moment.fn.zone` to get the timezone offset in minutes.
+
+### 1.1.2 [See milestone](https://github.com/timrwood/moment/issues?milestone=6&state=closed)
+
+- Release Nov 18, 2011
+
+Various bugfixes
+
+### 1.1.1 [See milestone](https://github.com/timrwood/moment/issues?milestone=5&state=closed)
+
+- Release Nov 12, 2011
+
+Added time specific diffs (months, days, hours, etc)
+
+### 1.1.0
+
+- Release Oct 28, 2011
+
+Added `moment.fn.format` localized masks. 'L LL LLL LLLL' [issue 29](https://github.com/timrwood/moment/pull/29)
+
+Fixed [issue 31](https://github.com/timrwood/moment/pull/31).
+
+### 1.0.1
+
+- Release Oct 18, 2011
+
+Added `moment.version` to get the current version.
+
+Removed `window !== undefined` when checking if module exists to support browserify. [issue 25](https://github.com/timrwood/moment/pull/25)
+
+### 1.0.0
+
+- Release
+
+Added convenience methods for getting and setting date parts.
+
+Added better support for `moment.add()`.
+
+Added better lang support in NodeJS.
+
+Renamed library from underscore.date to Moment.js
+
+### 0.6.1
+
+- Release Oct 12, 2011
+
+Added Portuguese, Italian, and French language support
+
+### 0.6.0
+
+- Release Sep 21, 2011
+
+Added _date.lang() support.
+Added support for passing multiple formats to try to parse a date. _date("07-10-1986", ["MM-DD-YYYY", "YYYY-MM-DD"]);
+Made parse from string and single format 25% faster.
+
+### 0.5.2
+
+- Release Jul 11, 2011
+
+Bugfix for [issue 8](https://github.com/timrwood/underscore.date/pull/8) and [issue 9](https://github.com/timrwood/underscore.date/pull/9).
+
+### 0.5.1
+
+- Release Jun 17, 2011
+
+Bugfix for [issue 5](https://github.com/timrwood/underscore.date/pull/5).
+
+### 0.5.0
+
+- Release Jun 13, 2011
+
+Dropped the redundant `_date.date()` in favor of `_date()`.
+Removed `_date.now()`, as it is a duplicate of `_date()` with no parameters.
+Removed `_date.isLeapYear(yearNumber)`. Use `_date([yearNumber]).isLeapYear()` instead.
+Exposed customization options through the `_date.relativeTime`, `_date.weekdays`, `_date.weekdaysShort`, `_date.months`, `_date.monthsShort`, and `_date.ordinal` variables instead of the `_date.customize()` function.
+
+### 0.4.1
+
+- Release May 9, 2011
+
+Added date input formats for input strings.
+
+### 0.4.0
+
+- Release May 9, 2011
+
+Added underscore.date to npm. Removed dependencies on underscore.
+
+### 0.3.2
+
+- Release Apr 9, 2011
+
+Added `'z'` and `'zz'` to `_.date().format()`. Cleaned up some redundant code to trim off some bytes.
+
+### 0.3.1
+
+- Release Mar 25, 2011
+
+Cleaned up the namespace. Moved all date manipulation and display functions to the _.date() object.
+
+### 0.3.0
+
+- Release Mar 25, 2011
+
+Switched to the Underscore methodology of not mucking with the native objects' prototypes.
+Made chaining possible.
+
+### 0.2.1
+
+- Release
+
+Changed date names to be a more pseudo standardized 'dddd, MMMM Do YYYY, h:mm:ss a'.
+Added `Date.prototype` functions `add`, `subtract`, `isdst`, and `isleapyear`.
+
+### 0.2.0
+
+- Release
+
+Changed function names to be more concise.
+Changed date format from php date format to custom format.
+
+### 0.1.0
+
+- Release
+
+Initial release
+
