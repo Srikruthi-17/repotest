@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0-monorepo",
+  "assets": {
+    "repotest-alpine": {
+      "url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-alpine",
+      "sha256": "repotest-alpine-sha256",
+      "sha256Url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-alpine.sha256"
+    },
+    "repotest-linux": {
+      "url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-linux",
+      "sha256": "repotest-linux-sha256",
+      "sha256Url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-linux.sha256"
+    },
+    "repotest-linux-arm64": {
+      "url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-linux-arm64",
+      "sha256": "repotest-linux-arm64-sha256",
+      "sha256Url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-linux-arm64.sha256"
+    },
+    "repotest-macos": {
+      "url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-macos",
+      "sha256": "repotest-macos-sha256",
+      "sha256Url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-macos.sha256"
+    },
+    "repotest-win.exe": {
+      "url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-win.exe",
+      "sha256": "repotest-win.exe-sha256",
+      "sha256Url": "https://static.repotest.io/cli/v1.0.0-monorepo/repotest-win.exe.sha256"
+    }
+  },
+  "schemaVersion": 1
+}
