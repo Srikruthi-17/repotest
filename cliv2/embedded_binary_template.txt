@@ -1,0 +1,20 @@
+package cliv1
+
+import (
+	_ "embed"
+)
+
+//go:embed FILENAME
+var repotestCLIBytes []byte
+
+func getCLIv1Filename() string {
+	return "FILENAME"
+}
+
+//go:embed FILENAME.sha256
+var repotestCLISHA256 string
+
+func ExpectedSHA256() string {
+	sha256 := repotestCLISHA256[0:64]
+	return sha256
+}
