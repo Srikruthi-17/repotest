@@ -1,5 +1,22 @@
-# Simple Monorepo
+# to-array
 
-This repository contains a number of different projects, both at the root and in directories.
+Turn an array like into an array
 
-It is used as a simple test fixture for monorepo and multi-language support on [Snyk.io](https://repotest.io). As such, each "project" is merely the files needed to describe dependencies.
+## Example
+
+``` js
+var toArray = require("to-array")
+    , elems = document.links
+
+var array = toArray(elems)
+```
+
+## Installation
+
+`npm install to-array`
+
+## Contributors
+
+ - Raynos
+
+## MIT Licenced

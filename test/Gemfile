@@ -1,6 +1,4 @@
 source :rubygems
 
-gem "sinatra"
-gem "haml"
-gem "httparty"
-gem "actionpack"
+gem "json"
+gem "xml-simple"
