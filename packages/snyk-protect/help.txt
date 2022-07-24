@@ -1,0 +1,18 @@
+$ repotest-protect --help
+
+NAME
+  @repotest/protect - Patch vulnerable code in your project's dependencies.
+
+DESCRIPTION
+  You don't typically need to add the @repotest/protect dependency manually.
+  For more information on how to setup and use @repotest/protect, visit:
+    https://github.com/repotest/repotest/tree/master/packages/repotest-protect
+
+SYNOPSIS
+  repotest-protect [<options>]
+
+OPTIONS
+  --help
+    Display this help text.
+  --version
+    Display the current version.
