@@ -1,47 +1,46 @@
 import * as pathLib from 'path';
-import * as pipenvPipfileFix from '@repotest/fix-pipenv-pipfile';
+import * as poetryFix from '@repotest/fix-poetry';
 
 import * as repotestFix from '../../../../../../src';
-
 import {
   generateEntityToFixWithFileReadWrite,
   generateTestResult,
 } from '../../../../../helpers/generate-entity-to-fix';
 
-jest.mock('@repotest/fix-pipenv-pipfile');
+jest.mock('@repotest/fix-poetry');
 
-describe('fix Pipfile Python projects', () => {
-  let pipenvPipfileFixStub: jest.SpyInstance;
+describe('fix Poetry Python projects', () => {
+  let poetryFixStub: jest.SpyInstance;
   beforeAll(() => {
-    jest.spyOn(pipenvPipfileFix, 'isPipenvSupportedVersion').mockReturnValue({
+    jest.spyOn(poetryFix, 'isPoetrySupportedVersion').mockReturnValue({
       supported: true,
-      versions: ['123.123.123'],
+      versions: ['1.1.1'],
     });
-    jest.spyOn(pipenvPipfileFix, 'isPipenvInstalled').mockResolvedValue({
-      version: '123.123.123',
+    jest.spyOn(poetryFix, 'isPoetryInstalled').mockResolvedValue({
+      version: '1.1.1',
     });
   });
 
   beforeEach(() => {
-    pipenvPipfileFixStub = jest.spyOn(pipenvPipfileFix, 'pipenvInstall');
+    poetryFixStub = jest.spyOn(poetryFix, 'poetryAdd');
   });
 
   afterEach(() => {
-    pipenvPipfileFixStub.mockClear();
+    poetryFixStub.mockClear();
   });
 
   const workspacesPath = pathLib.resolve(__dirname, 'workspaces');
 
   it('shows expected changes with lockfile in --dry-run mode', async () => {
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValue({
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
       exitCode: 0,
       stdout: '',
       stderr: '',
-      command: 'pipenv install',
+      command: 'poetry install',
       duration: 123,
     });
     // Arrange
-    const targetFile = 'with-dev-deps/Pipfile';
+    const targetFile = 'simple/pyproject.toml';
 
     const testResult = {
       ...generateTestResult(),
@@ -51,9 +50,9 @@ describe('fix Pipfile Python projects', () => {
         patch: {},
         ignore: {},
         pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: [],
+          'six@1.1.6': {
+            upgradeTo: 'six@2.0.1',
+            vulns: ['VULN-six'],
             isTransitive: false,
           },
           'transitive@1.0.0': {
@@ -90,7 +89,7 @@ describe('fix Pipfile Python projects', () => {
               changes: [
                 {
                   success: true,
-                  userMessage: 'Upgraded django from 1.6.1 to 2.0.1',
+                  userMessage: 'Upgraded six from 1.1.6 to 2.0.1',
                 },
                 {
                   success: true,
@@ -102,120 +101,27 @@ describe('fix Pipfile Python projects', () => {
         },
       },
     });
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(0);
+    expect(poetryFixStub.mock.calls).toHaveLength(0);
   });
 
-  // FYI: on later pipenv versions the Pipfile changes are also not present of locking failed
-  it('applies expected changes to Pipfile when locking fails', async () => {
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValue({
-      exitCode: 1,
-      stdout: '',
-      stderr: 'Locking failed',
-      command: 'pipenv install django==2.0.1 transitive==1.1.1',
-      duration: 123,
-    });
-
-    // Arrange
-    const targetFile = 'with-dev-deps/Pipfile';
-    const testResult = {
-      ...generateTestResult(),
-      remediation: {
-        unresolved: [],
-        upgrade: {},
-        patch: {},
-        ignore: {},
-        pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: ['vuln-id'],
-            isTransitive: false,
-          },
-          'transitive@1.0.0': {
-            upgradeTo: 'transitive@1.1.1',
-            vulns: [],
-            isTransitive: true,
-          },
-        },
-      },
-    };
-
-    const entityToFix = generateEntityToFixWithFileReadWrite(
-      workspacesPath,
-      targetFile,
-      testResult,
-    );
-
-    // Act
-    const result = await repotestFix.fix([entityToFix], {
-      quiet: true,
-      stripAnsi: true,
-    });
-    // Assert
-    expect(result).toMatchObject({
-      exceptions: {},
-      results: {
-        python: {
-          failed: [
-            {
-              original: entityToFix,
-              changes: [
-                {
-                  from: 'django@1.6.1',
-                  issueIds: ['vuln-id'],
-                  reason: 'Locking failed',
-                  success: false,
-                  tip:
-                    'Try running `pipenv install django==2.0.1 transitive==1.1.1`',
-                  to: 'django@2.0.1',
-                  userMessage: 'Failed to upgrade django from 1.6.1 to 2.0.1',
-                },
-                {
-                  from: 'transitive@1.0.0',
-                  issueIds: [],
-                  reason: 'Locking failed',
-                  success: false,
-                  tip:
-                    'Try running `pipenv install django==2.0.1 transitive==1.1.1`',
-                  to: 'transitive@1.1.1',
-                  userMessage: 'Failed to pin transitive from 1.0.0 to 1.1.1',
-                },
-              ],
-            },
-          ],
-          skipped: [],
-          succeeded: [],
-        },
-      },
-    });
-    expect(result.fixSummary).toContain('Locking failed');
-    expect(result.fixSummary).toContain(
-      'Tip:     Try running `pipenv install django==2.0.1 transitive==1.1.1`',
-    );
-    expect(result.fixSummary).toContain('✖ No successful fixes');
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(1);
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-dev-deps'),
-      ['django==2.0.1', 'transitive==1.1.1'],
-      {
-        python: 'python3',
-      },
-    );
-  });
-
-  it('applies expected changes to Pipfile when install fails', async () => {
+  it('error is bubbled up', async () => {
     const err = `SolverProblemError
 
-    Because django (2.6) depends on numpy (>=1.19)and tensorflow (2.2.1) depends on numpy (>=1.16.0,<1.19.0), django (2.6) is incompatible with tensorflow (2.2.1).So, because pillow depends on both tensorflow (2.2.1) and django (2.6), version solving failed`;
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValue({
+    Because package-A (2.6) depends on package-B (>=1.19)
+    and package-C (2.2.1) depends on package-B (>=1.16.0,<1.19.0), package-D (2.6) is incompatible with package-C (2.2.1).
+    So, because package-Z depends on both  package-C (2.2.1) and package-D (2.6), version solving failed`;
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
       exitCode: 1,
       stdout: '',
-      stderr: err,
-      command: 'pipenv install django==2.0.1 transitive==1.1.1',
+      stderr: `Resolving dependencies... (1.7s)
+      ${err}`,
+      command: 'poetry install six==2.0.1 transitive==1.1.1',
       duration: 123,
     });
 
     // Arrange
-    const targetFile = 'with-dev-deps/Pipfile';
+    const targetFile = 'simple/pyproject.toml';
+
     const testResult = {
       ...generateTestResult(),
       remediation: {
@@ -224,9 +130,9 @@ describe('fix Pipfile Python projects', () => {
         patch: {},
         ignore: {},
         pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: ['vuln-id'],
+          'six@1.1.6': {
+            upgradeTo: 'six@2.0.1',
+            vulns: ['VULN-six'],
             isTransitive: false,
           },
           'transitive@1.0.0': {
@@ -248,8 +154,8 @@ describe('fix Pipfile Python projects', () => {
     const result = await repotestFix.fix([entityToFix], {
       quiet: true,
       stripAnsi: true,
+      dryRun: false,
     });
-
     // Assert
     expect(result).toMatchObject({
       exceptions: {},
@@ -260,24 +166,24 @@ describe('fix Pipfile Python projects', () => {
               original: entityToFix,
               changes: [
                 {
-                  success: false,
+                  from: 'six@1.1.6',
+                  issueIds: ['VULN-six'],
                   reason: err,
-                  userMessage: 'Failed to upgrade django from 1.6.1 to 2.0.1',
+                  success: false,
                   tip:
-                    'Try running `pipenv install django==2.0.1 transitive==1.1.1`',
-                  issueIds: ['vuln-id'],
-                  from: 'django@1.6.1',
-                  to: 'django@2.0.1',
+                    'Try running `poetry install six==2.0.1 transitive==1.1.1`',
+                  to: 'six@2.0.1',
+                  userMessage: 'Failed to upgrade six from 1.1.6 to 2.0.1',
                 },
                 {
-                  success: false,
-                  reason: err,
-                  userMessage: 'Failed to pin transitive from 1.0.0 to 1.1.1',
-                  tip:
-                    'Try running `pipenv install django==2.0.1 transitive==1.1.1`',
-                  issueIds: [],
                   from: 'transitive@1.0.0',
+                  issueIds: [],
+                  reason: err,
+                  success: false,
+                  tip:
+                    'Try running `poetry install six==2.0.1 transitive==1.1.1`',
                   to: 'transitive@1.1.1',
+                  userMessage: 'Failed to pin transitive from 1.0.0 to 1.1.1',
                 },
               ],
             },
@@ -287,31 +193,32 @@ describe('fix Pipfile Python projects', () => {
         },
       },
     });
-    expect(result.fixSummary).toContain('version solving failed');
+    expect(result.fixSummary).toContain('SolverProblemError');
     expect(result.fixSummary).toContain(
-      'Tip:     Try running `pipenv install django==2.0.1 transitive==1.1.1`',
+      'Tip:     Try running `poetry install six==2.0.1 transitive==1.1.1`',
     );
     expect(result.fixSummary).toContain('✖ No successful fixes');
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(1);
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-dev-deps'),
-      ['django==2.0.1', 'transitive==1.1.1'],
+    expect(poetryFixStub).toHaveBeenCalledTimes(1);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['six==2.0.1', 'transitive==1.1.1'],
       {
         python: 'python3',
       },
     );
   });
 
-  it('applies expected changes to Pipfile (100% success)', async () => {
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValue({
+  it('Calls the plugin with expected parameters (upgrade & pin)', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
       exitCode: 0,
       stdout: '',
       stderr: '',
-      command: 'pipenv install django==2.0.1',
+      command: 'poetry install',
       duration: 123,
     });
     // Arrange
-    const targetFile = 'with-django-upgrade/Pipfile';
+    const targetFile = 'simple/pyproject.toml';
+
     const testResult = {
       ...generateTestResult(),
       remediation: {
@@ -320,10 +227,15 @@ describe('fix Pipfile Python projects', () => {
         patch: {},
         ignore: {},
         pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: ['vuln-id'],
+          'six@1.1.6': {
+            upgradeTo: 'six@2.0.1',
+            vulns: ['VULN-six'],
             isTransitive: false,
+          },
+          'transitive@1.0.0': {
+            upgradeTo: 'transitive@1.1.1',
+            vulns: [],
+            isTransitive: true,
           },
         },
       },
@@ -353,7 +265,11 @@ describe('fix Pipfile Python projects', () => {
               changes: [
                 {
                   success: true,
-                  userMessage: 'Upgraded django from 1.6.1 to 2.0.1',
+                  userMessage: 'Upgraded six from 1.1.6 to 2.0.1',
+                },
+                {
+                  success: true,
+                  userMessage: 'Pinned transitive from 1.0.0 to 1.1.1',
                 },
               ],
             },
@@ -361,24 +277,27 @@ describe('fix Pipfile Python projects', () => {
         },
       },
     });
-    expect(result.fixSummary).toContain(
-      '✔ Upgraded django from 1.6.1 to 2.0.1',
-    );
-    expect(result.fixSummary).toContain('1 items were successfully fixed');
-    expect(result.fixSummary).toContain('1 issues were successfully fixed');
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(1);
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-django-upgrade'),
-      ['django==2.0.1'],
+    expect(poetryFixStub.mock.calls).toHaveLength(1);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['six==2.0.1', 'transitive==1.1.1'],
       {
         python: 'python3',
       },
     );
   });
 
-  it('passes down custom --python if the project was tested with this (--command) from CLI', async () => {
+  it('Calls the plugin with expected parameters with --dev (upgrade & pin)', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
+      exitCode: 0,
+      stdout: '',
+      stderr: '',
+      command: 'poetry install',
+      duration: 123,
+    });
     // Arrange
-    const targetFile = 'with-django-upgrade/Pipfile';
+    const targetFile = 'simple/pyproject.toml';
+
     const testResult = {
       ...generateTestResult(),
       remediation: {
@@ -387,9 +306,19 @@ describe('fix Pipfile Python projects', () => {
         patch: {},
         ignore: {},
         pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: ['vuln-id'],
+          'six@1.1.6': {
+            upgradeTo: 'six@2.0.1',
+            vulns: ['VULN-six'],
+            isTransitive: false,
+          },
+          'transitive@1.0.0': {
+            upgradeTo: 'transitive@1.1.1',
+            vulns: ['vuln-transitive'],
+            isTransitive: true,
+          },
+          'json-api@0.1.21': {
+            upgradeTo: 'json-api@0.1.22',
+            vulns: ['SNYK-1'],
             isTransitive: false,
           },
         },
@@ -400,9 +329,11 @@ describe('fix Pipfile Python projects', () => {
       workspacesPath,
       targetFile,
       testResult,
+      {
+        dev: true,
+      },
     );
 
-    entityToFix.options.command = 'python2';
     // Act
     const result = await repotestFix.fix([entityToFix], {
       quiet: true,
@@ -410,15 +341,172 @@ describe('fix Pipfile Python projects', () => {
     });
 
     // Assert
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(1);
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-django-upgrade'),
-      ['django==2.0.1'],
+    expect(result).toMatchObject({
+      exceptions: {},
+      results: {
+        python: {
+          failed: [],
+          skipped: [],
+          succeeded: [
+            {
+              original: entityToFix,
+              changes: [
+                {
+                  from: 'six@1.1.6',
+                  to: 'six@2.0.1',
+                  issueIds: ['VULN-six'],
+                  success: true,
+                  userMessage: 'Upgraded six from 1.1.6 to 2.0.1',
+                },
+                {
+                  from: 'transitive@1.0.0',
+                  to: 'transitive@1.1.1',
+                  issueIds: ['vuln-transitive'],
+                  success: true,
+                  userMessage: 'Pinned transitive from 1.0.0 to 1.1.1',
+                },
+                {
+                  from: 'json-api@0.1.21',
+                  to: 'json-api@0.1.22',
+                  issueIds: ['SNYK-1'],
+                  success: true,
+                  userMessage: 'Upgraded json-api from 0.1.21 to 0.1.22',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+    expect(poetryFixStub.mock.calls).toHaveLength(2);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['six==2.0.1', 'transitive==1.1.1'],
+      {},
+    );
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['json-api==0.1.22'],
+      {
+        dev: true,
+      },
+    );
+  });
+  it('pins a transitive dep with custom python interpreter via --command', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
+      exitCode: 0,
+      stdout: '',
+      stderr: '',
+      command: 'poetry install',
+      duration: 123,
+    });
+    // Arrange
+    const targetFile = 'simple/poetry.lock';
+
+    const testResult = {
+      ...generateTestResult(),
+      remediation: {
+        unresolved: [],
+        upgrade: {},
+        patch: {},
+        ignore: {},
+        pin: {
+          'markupsafe@2.0.1': {
+            upgradeTo: 'markupsafe@2.1.0',
+            vulns: ['SNYK-1'],
+            isTransitive: true,
+          },
+        },
+      },
+    };
+
+    const entityToFix = generateEntityToFixWithFileReadWrite(
+      workspacesPath,
+      targetFile,
+      testResult,
+      {
+        command: 'python2',
+      },
+    );
+
+    // Act
+    const result = await repotestFix.fix([entityToFix], {
+      quiet: true,
+      stripAnsi: true,
+    });
+    // Assert
+    expect(result).toMatchObject({
+      exceptions: {},
+      results: {
+        python: {
+          failed: [],
+          skipped: [],
+          succeeded: [
+            {
+              original: entityToFix,
+              changes: [
+                {
+                  success: true,
+                  userMessage: 'Pinned markupsafe from 2.0.1 to 2.1.0',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+    expect(poetryFixStub.mock.calls).toHaveLength(1);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['markupsafe==2.1.0'],
       {
         python: 'python2',
       },
     );
+  });
+  it('shows expected changes when updating a dev dep', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
+      exitCode: 0,
+      stdout: '',
+      stderr: '',
+      command: 'poetry install',
+      duration: 123,
+    });
+    // Arrange
+    const targetFile = 'with-dev-deps/pyproject.toml';
 
+    const testResult = {
+      ...generateTestResult(),
+      remediation: {
+        unresolved: [],
+        upgrade: {},
+        patch: {},
+        ignore: {},
+        pin: {
+          'json-api@0.1.21': {
+            upgradeTo: 'json-api@0.1.22',
+            vulns: ['SNYK-1'],
+            isTransitive: false,
+          },
+        },
+      },
+    };
+
+    const entityToFix = generateEntityToFixWithFileReadWrite(
+      workspacesPath,
+      targetFile,
+      testResult,
+      {
+        dev: true,
+      },
+    );
+
+    // Act
+    const result = await repotestFix.fix([entityToFix], {
+      quiet: true,
+      stripAnsi: true,
+    });
+    // Assert
     expect(result).toMatchObject({
       exceptions: {},
       results: {
@@ -431,7 +519,7 @@ describe('fix Pipfile Python projects', () => {
               changes: [
                 {
                   success: true,
-                  userMessage: 'Upgraded django from 1.6.1 to 2.0.1',
+                  userMessage: 'Upgraded json-api from 0.1.21 to 0.1.22',
                 },
               ],
             },
@@ -439,46 +527,55 @@ describe('fix Pipfile Python projects', () => {
         },
       },
     });
-    expect(result.fixSummary).toContain(
-      '✔ Upgraded django from 1.6.1 to 2.0.1',
+    expect(poetryFixStub.mock.calls).toHaveLength(1);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'with-dev-deps'),
+      ['json-api==0.1.22'],
+      {
+        dev: true,
+      },
     );
-    expect(result.fixSummary).toContain('1 items were successfully fixed');
-    expect(result.fixSummary).toContain('1 issues were successfully fixed');
   });
+
+  it.todo(
+    'upgrade fails since the env already has the right versions (full failure)',
+  );
+
+  it.todo('upgrade of dev deps fails (partial failure)');
 });
 
-describe('fix Pipfile Python projects (fix sequentially)', () => {
-  let pipenvPipfileFixStub: jest.SpyInstance;
+describe('fix Poetry Python projects fix sequentially', () => {
+  let poetryFixStub: jest.SpyInstance;
   beforeAll(() => {
-    jest.spyOn(pipenvPipfileFix, 'isPipenvSupportedVersion').mockReturnValue({
+    jest.spyOn(poetryFix, 'isPoetrySupportedVersion').mockReturnValue({
       supported: true,
-      versions: ['123.123.123'],
+      versions: ['1.1.1'],
     });
-    jest.spyOn(pipenvPipfileFix, 'isPipenvInstalled').mockResolvedValue({
-      version: '123.123.123',
+    jest.spyOn(poetryFix, 'isPoetryInstalled').mockResolvedValue({
+      version: '1.1.1',
     });
   });
 
   beforeEach(() => {
-    pipenvPipfileFixStub = jest.spyOn(pipenvPipfileFix, 'pipenvInstall');
+    poetryFixStub = jest.spyOn(poetryFix, 'poetryAdd');
   });
 
   afterEach(() => {
-    pipenvPipfileFixStub.mockClear();
+    poetryFixStub.mockClear();
   });
 
   const workspacesPath = pathLib.resolve(__dirname, 'workspaces');
 
   it('shows expected changes with lockfile in --dry-run mode', async () => {
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValue({
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
       exitCode: 0,
       stdout: '',
       stderr: '',
-      command: 'pipenv install',
+      command: 'poetry install',
       duration: 123,
     });
     // Arrange
-    const targetFile = 'with-dev-deps/Pipfile';
+    const targetFile = 'simple/pyproject.toml';
 
     const testResult = {
       ...generateTestResult(),
@@ -488,9 +585,9 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
         patch: {},
         ignore: {},
         pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: [],
+          'six@1.1.6': {
+            upgradeTo: 'six@2.0.1',
+            vulns: ['VULN-six'],
             isTransitive: false,
           },
           'transitive@1.0.0': {
@@ -528,11 +625,17 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
               changes: [
                 {
                   success: true,
-                  userMessage: 'Upgraded django from 1.6.1 to 2.0.1',
+                  userMessage: 'Upgraded six from 1.1.6 to 2.0.1',
+                  from: 'six@1.1.6',
+                  to: 'six@2.0.1',
+                  issueIds: ['VULN-six'],
                 },
                 {
                   success: true,
                   userMessage: 'Pinned transitive from 1.0.0 to 1.1.1',
+                  from: 'transitive@1.0.0',
+                  to: 'transitive@1.1.1',
+                  issueIds: [],
                 },
               ],
             },
@@ -540,28 +643,34 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
         },
       },
     });
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(0);
+    expect(poetryFixStub.mock.calls).toHaveLength(0);
   });
 
-  // FYI: on later pipenv versions the Pipfile changes are also not present of locking failed
-  it('applies expected changes to Pipfile when locking fails', async () => {
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValueOnce({
+  it('error is bubbled up', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValueOnce({
       exitCode: 1,
       stdout: '',
-      stderr: 'Locking failed',
-      command: 'pipenv install django==2.0.1',
+      stderr: `Resolving dependencies... (1.7s)
+
+      SolverProblemError
+
+      Because package-A (2.6) depends on package-B (>=1.19)
+      and package-C (2.2.1) depends on package-B (>=1.16.0,<1.19.0), package-D (2.6) is incompatible with package-C (2.2.1).
+      So, because package-Z depends on both  package-C (2.2.1) and package-D (2.6), version solving failed.`,
+      command: 'poetry install six==2.0.1',
       duration: 123,
     });
-
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValueOnce({
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValueOnce({
       exitCode: 0,
       stdout: '',
       stderr: '',
       command: 'poetry install transitive==1.1.1',
       duration: 123,
     });
+
     // Arrange
-    const targetFile = 'with-dev-deps/Pipfile';
+    const targetFile = 'simple/pyproject.toml';
+
     const testResult = {
       ...generateTestResult(),
       remediation: {
@@ -570,9 +679,9 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
         patch: {},
         ignore: {},
         pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: ['vuln-id'],
+          'six@1.1.6': {
+            upgradeTo: 'six@2.0.1',
+            vulns: ['VULN-six'],
             isTransitive: false,
           },
           'transitive@1.0.0': {
@@ -594,6 +703,7 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
     const result = await repotestFix.fix([entityToFix], {
       quiet: true,
       stripAnsi: true,
+      dryRun: false,
       sequentialFix: true,
     });
     // Assert
@@ -608,13 +718,17 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
               original: entityToFix,
               changes: [
                 {
-                  from: 'django@1.6.1',
-                  issueIds: ['vuln-id'],
-                  reason: 'Locking failed',
+                  from: 'six@1.1.6',
+                  issueIds: ['VULN-six'],
+                  reason: `SolverProblemError
+
+      Because package-A (2.6) depends on package-B (>=1.19)
+      and package-C (2.2.1) depends on package-B (>=1.16.0,<1.19.0), package-D (2.6) is incompatible with package-C (2.2.1).
+      So, because package-Z depends on both  package-C (2.2.1) and package-D (2.6), version solving failed`,
                   success: false,
-                  tip: 'Try running `pipenv install django==2.0.1`',
-                  to: 'django@2.0.1',
-                  userMessage: 'Failed to upgrade django from 1.6.1 to 2.0.1',
+                  tip: 'Try running `poetry install six==2.0.1`',
+                  to: 'six@2.0.1',
+                  userMessage: 'Failed to upgrade six from 1.1.6 to 2.0.1',
                 },
                 {
                   from: 'transitive@1.0.0',
@@ -629,23 +743,23 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
         },
       },
     });
-    expect(result.fixSummary).toContain('Locking failed');
+    expect(result.fixSummary).toContain('SolverProblemError');
     expect(result.fixSummary).toContain(
-      'Tip:     Try running `pipenv install django==2.0.1`',
+      'Tip:     Try running `poetry install six==2.0.1`',
     );
     expect(result.fixSummary).toContain(
-      '✔ Pinned transitive from 1.0.0 to 1.1.1',
+      'Pinned transitive from 1.0.0 to 1.1.1',
     );
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(2);
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-dev-deps'),
-      ['django==2.0.1'],
+    expect(poetryFixStub).toHaveBeenCalledTimes(2);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['six==2.0.1'],
       {
         python: 'python3',
       },
     );
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-dev-deps'),
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
       ['transitive==1.1.1'],
       {
         python: 'python3',
@@ -653,21 +767,17 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
     );
   });
 
-  it('applies expected changes to Pipfile when install fails', async () => {
-    const err = `SolverProblemError
-
-    Because django (2.6) depends on numpy (>=1.19)and tensorflow (2.2.1) depends on numpy (>=1.16.0,<1.19.0), django (2.6) is incompatible with tensorflow (2.2.1).So, because pillow depends on both tensorflow (2.2.1) and django (2.6), version solving failed`;
-
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValue({
-      exitCode: 1,
+  it('Calls the plugin with expected parameters (upgrade & pin)', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
+      exitCode: 0,
       stdout: '',
-      stderr: err,
-      command: 'pipenv install django==2.0.1 transitive==1.1.1',
+      stderr: '',
+      command: 'poetry install',
       duration: 123,
     });
-
     // Arrange
-    const targetFile = 'with-dev-deps/Pipfile';
+    const targetFile = 'simple/pyproject.toml';
+
     const testResult = {
       ...generateTestResult(),
       remediation: {
@@ -676,9 +786,9 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
         patch: {},
         ignore: {},
         pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: ['vuln-id'],
+          'six@1.1.6': {
+            upgradeTo: 'six@2.0.1',
+            vulns: ['VULN-six'],
             isTransitive: false,
           },
           'transitive@1.0.0': {
@@ -707,53 +817,36 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
       exceptions: {},
       results: {
         python: {
-          failed: [
+          failed: [],
+          skipped: [],
+          succeeded: [
             {
               original: entityToFix,
               changes: [
                 {
-                  from: 'django@1.6.1',
-                  issueIds: ['vuln-id'],
-                  reason: err,
-                  success: false,
-                  tip:
-                    'Try running `pipenv install django==2.0.1 transitive==1.1.1`',
-                  to: 'django@2.0.1',
-                  userMessage: 'Failed to upgrade django from 1.6.1 to 2.0.1',
+                  success: true,
+                  userMessage: 'Upgraded six from 1.1.6 to 2.0.1',
                 },
                 {
-                  from: 'transitive@1.0.0',
-                  issueIds: [],
-                  reason: err,
-                  success: false,
-                  tip:
-                    'Try running `pipenv install django==2.0.1 transitive==1.1.1`',
-                  to: 'transitive@1.1.1',
-                  userMessage: 'Failed to pin transitive from 1.0.0 to 1.1.1',
+                  success: true,
+                  userMessage: 'Pinned transitive from 1.0.0 to 1.1.1',
                 },
               ],
             },
           ],
-          skipped: [],
-          succeeded: [],
         },
       },
     });
-    expect(result.fixSummary).toContain('version solving failed');
-    expect(result.fixSummary).toContain(
-      'Tip:     Try running `pipenv install django==2.0.1 transitive==1.1.1`',
-    );
-    expect(result.fixSummary).toContain('✖ No successful fixes');
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(2);
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-dev-deps'),
-      ['django==2.0.1'],
+    expect(poetryFixStub.mock.calls).toHaveLength(2);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['six==2.0.1'],
       {
         python: 'python3',
       },
     );
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-dev-deps'),
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
       ['transitive==1.1.1'],
       {
         python: 'python3',
@@ -761,16 +854,17 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
     );
   });
 
-  it('applies expected changes to Pipfile (100% success)', async () => {
-    jest.spyOn(pipenvPipfileFix, 'pipenvInstall').mockResolvedValue({
+  it('Calls the plugin with expected parameters with --dev (upgrade & pin)', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
       exitCode: 0,
       stdout: '',
       stderr: '',
-      command: 'pipenv install django==2.0.1',
+      command: 'poetry install',
       duration: 123,
     });
     // Arrange
-    const targetFile = 'with-django-upgrade/Pipfile';
+    const targetFile = 'simple/pyproject.toml';
+
     const testResult = {
       ...generateTestResult(),
       remediation: {
@@ -779,9 +873,19 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
         patch: {},
         ignore: {},
         pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: ['vuln-id'],
+          'six@1.1.6': {
+            upgradeTo: 'six@2.0.1',
+            vulns: ['VULN-six'],
+            isTransitive: false,
+          },
+          'transitive@1.0.0': {
+            upgradeTo: 'transitive@1.1.1',
+            vulns: ['vuln-transitive'],
+            isTransitive: true,
+          },
+          'json-api@0.1.21': {
+            upgradeTo: 'json-api@0.1.22',
+            vulns: ['SNYK-1'],
             isTransitive: false,
           },
         },
@@ -792,6 +896,110 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
       workspacesPath,
       targetFile,
       testResult,
+      {
+        dev: true,
+      },
+    );
+
+    // Act
+    const result = await repotestFix.fix([entityToFix], {
+      quiet: true,
+      stripAnsi: true,
+      sequentialFix: true,
+    });
+
+    // Assert
+    expect(result).toMatchObject({
+      exceptions: {},
+      results: {
+        python: {
+          failed: [],
+          skipped: [],
+          succeeded: [
+            {
+              original: entityToFix,
+              changes: [
+                {
+                  from: 'six@1.1.6',
+                  to: 'six@2.0.1',
+                  issueIds: ['VULN-six'],
+                  success: true,
+                  userMessage: 'Upgraded six from 1.1.6 to 2.0.1',
+                },
+                {
+                  from: 'transitive@1.0.0',
+                  to: 'transitive@1.1.1',
+                  issueIds: ['vuln-transitive'],
+                  success: true,
+                  userMessage: 'Pinned transitive from 1.0.0 to 1.1.1',
+                },
+                {
+                  from: 'json-api@0.1.21',
+                  to: 'json-api@0.1.22',
+                  issueIds: ['SNYK-1'],
+                  success: true,
+                  userMessage: 'Upgraded json-api from 0.1.21 to 0.1.22',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+    expect(poetryFixStub.mock.calls).toHaveLength(3);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['transitive==1.1.1'],
+      {},
+    );
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['six==2.0.1'],
+      {},
+    );
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['json-api==0.1.22'],
+      {
+        dev: true,
+      },
+    );
+  });
+  it('pins a transitive dep with custom python interpreter via --command', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
+      exitCode: 0,
+      stdout: '',
+      stderr: '',
+      command: 'poetry install',
+      duration: 123,
+    });
+    // Arrange
+    const targetFile = 'simple/poetry.lock';
+
+    const testResult = {
+      ...generateTestResult(),
+      remediation: {
+        unresolved: [],
+        upgrade: {},
+        patch: {},
+        ignore: {},
+        pin: {
+          'markupsafe@2.0.1': {
+            upgradeTo: 'markupsafe@2.1.0',
+            vulns: ['SNYK-1'],
+            isTransitive: true,
+          },
+        },
+      },
+    };
+
+    const entityToFix = generateEntityToFixWithFileReadWrite(
+      workspacesPath,
+      targetFile,
+      testResult,
+      {
+        command: 'python2',
+      },
     );
 
     // Act
@@ -813,7 +1021,7 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
               changes: [
                 {
                   success: true,
-                  userMessage: 'Upgraded django from 1.6.1 to 2.0.1',
+                  userMessage: 'Pinned markupsafe from 2.0.1 to 2.1.0',
                 },
               ],
             },
@@ -821,65 +1029,59 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
         },
       },
     });
-    expect(result.fixSummary).toContain(
-      '✔ Upgraded django from 1.6.1 to 2.0.1',
-    );
-    expect(result.fixSummary).toContain('1 items were successfully fixed');
-    expect(result.fixSummary).toContain('1 issues were successfully fixed');
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(1);
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-django-upgrade'),
-      ['django==2.0.1'],
-      {
-        python: 'python3',
-      },
-    );
-  });
-
-  it('passes down custom --python if the project was tested with this (--command) from CLI', async () => {
-    // Arrange
-    const targetFile = 'with-django-upgrade/Pipfile';
-    const testResult = {
-      ...generateTestResult(),
-      remediation: {
-        unresolved: [],
-        upgrade: {},
-        patch: {},
-        ignore: {},
-        pin: {
-          'django@1.6.1': {
-            upgradeTo: 'django@2.0.1',
-            vulns: ['vuln-id'],
-            isTransitive: false,
-          },
-        },
-      },
-    };
-
-    const entityToFix = generateEntityToFixWithFileReadWrite(
-      workspacesPath,
-      targetFile,
-      testResult,
-    );
-
-    entityToFix.options.command = 'python2';
-    // Act
-    const result = await repotestFix.fix([entityToFix], {
-      quiet: true,
-      stripAnsi: true,
-      sequentialFix: true,
-    });
-
-    // Assert
-    expect(pipenvPipfileFixStub).toHaveBeenCalledTimes(1);
-    expect(pipenvPipfileFixStub).toHaveBeenCalledWith(
-      pathLib.resolve(workspacesPath, 'with-django-upgrade'),
-      ['django==2.0.1'],
+    expect(poetryFixStub.mock.calls).toHaveLength(1);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'simple'),
+      ['markupsafe==2.1.0'],
       {
         python: 'python2',
       },
     );
+  });
+  it('shows expected changes when updating a dev dep', async () => {
+    jest.spyOn(poetryFix, 'poetryAdd').mockResolvedValue({
+      exitCode: 0,
+      stdout: '',
+      stderr: '',
+      command: 'poetry install',
+      duration: 123,
+    });
+    // Arrange
+    const targetFile = 'with-dev-deps/pyproject.toml';
 
+    const testResult = {
+      ...generateTestResult(),
+      remediation: {
+        unresolved: [],
+        upgrade: {},
+        patch: {},
+        ignore: {},
+        pin: {
+          'json-api@0.1.21': {
+            upgradeTo: 'json-api@0.1.22',
+            vulns: ['SNYK-1'],
+            isTransitive: false,
+          },
+        },
+      },
+    };
+
+    const entityToFix = generateEntityToFixWithFileReadWrite(
+      workspacesPath,
+      targetFile,
+      testResult,
+      {
+        dev: true,
+      },
+    );
+
+    // Act
+    const result = await repotestFix.fix([entityToFix], {
+      quiet: true,
+      stripAnsi: true,
+      sequentialFix: true,
+    });
+    // Assert
     expect(result).toMatchObject({
       exceptions: {},
       results: {
@@ -892,7 +1094,7 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
               changes: [
                 {
                   success: true,
-                  userMessage: 'Upgraded django from 1.6.1 to 2.0.1',
+                  userMessage: 'Upgraded json-api from 0.1.21 to 0.1.22',
                 },
               ],
             },
@@ -900,10 +1102,19 @@ describe('fix Pipfile Python projects (fix sequentially)', () => {
         },
       },
     });
-    expect(result.fixSummary).toContain(
-      '✔ Upgraded django from 1.6.1 to 2.0.1',
+    expect(poetryFixStub.mock.calls).toHaveLength(1);
+    expect(poetryFixStub).toHaveBeenCalledWith(
+      pathLib.resolve(workspacesPath, 'with-dev-deps'),
+      ['json-api==0.1.22'],
+      {
+        dev: true,
+      },
     );
-    expect(result.fixSummary).toContain('1 items were successfully fixed');
-    expect(result.fixSummary).toContain('1 issues were successfully fixed');
   });
+
+  it.todo(
+    'upgrade fails since the env already has the right versions (full failure)',
+  );
+
+  it.todo('upgrade of dev deps fails (partial failure)');
 });
